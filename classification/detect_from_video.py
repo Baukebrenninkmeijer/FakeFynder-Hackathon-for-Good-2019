@@ -18,7 +18,7 @@ import dlib
 import torch
 import torch.nn as nn
 from PIL import Image as pil_image
-from tqdm import tqdm
+from tqdm import tqdm, tqdm_notebook
 
 from network.models import model_selection
 from dataset.transform import xception_default_data_transforms
@@ -103,7 +103,7 @@ def predict_with_model(image, model, post_function=nn.Softmax(dim=1),
 
 
 def test_full_image_network(video_path, model_path, output_path,
-                            start_frame=0, end_frame=None, cuda=True):
+                            start_frame=0, end_frame=None, cuda=True, notebook=False):
     """
     Reads a video and evaluates a subset of frames with the a detection network
     that takes in a full frame. Outputs are only given if a face is present
@@ -132,10 +132,12 @@ def test_full_image_network(video_path, model_path, output_path,
     face_detector = dlib.get_frontal_face_detector()
 
     # Load model
-    model, *_ = model_selection(modelname='xception', num_out_classes=2)
+    # model, *_ = model_selection(modelname='xception', num_out_classes=2)
     if model_path is not None:
         model = torch.load(model_path)
         print('Model found in {}'.format(model_path))
+#         print(model.model)
+#         print(model.model.last_linear.weight.data.cpu().numpy())
     else:
         print('No model found, initializing random model.')
     if cuda:
@@ -150,7 +152,10 @@ def test_full_image_network(video_path, model_path, output_path,
     frame_num = 0
     assert start_frame < num_frames - 1
     end_frame = end_frame if end_frame else num_frames
-    pbar = tqdm(total=end_frame-start_frame)
+    if notebook:
+        pbar = tqdm_notebook(total=end_frame-start_frame)
+    else:
+        pbar = tqdm(total=end_frame-start_frame)
 
     while reader.isOpened():
         _, image = reader.read()
@@ -196,6 +201,7 @@ def test_full_image_network(video_path, model_path, output_path,
             color = (0, 255, 0) if prediction == 0 else (0, 0, 255)
             output_list = ['{0:.2f}'.format(float(x)) for x in
                            output.detach().cpu().numpy()[0]]
+            tqdm.write(f'{output_list}=>{label}')
             cv2.putText(image, str(output_list)+'=>'+label, (x, y+h+30),
                         font_face, font_scale,
                         color, thickness, 2)
