@@ -11,10 +11,10 @@ from flask import Flask, flash, request, redirect, url_for, render_template
 from werkzeug.utils import secure_filename
 
 
-UPLOAD_FOLDER = './classification/working_dir/uploads'
+UPLOAD_FOLDER = './classification/data_dir/uploads'
 ALLOWED_EXTENSIONS = set(['mp4', 'avi'])
 MODEL_PATH = './classification/weights/full/xception/full_c23.p'
-OUTPUT_PATH = './classification/working_dir/results'
+OUTPUT_PATH = './classification/data_dir/results'
 
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
