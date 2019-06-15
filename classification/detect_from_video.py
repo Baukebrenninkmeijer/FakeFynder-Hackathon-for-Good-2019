@@ -155,7 +155,7 @@ def test_full_image_network(video_path, model_path, output_path,
 
     # Frame numbers and length of output video
     frame_num = 0
-    total_steps = num_frames * percentage
+    total_steps = num_frames * analysed_percentage
     frame_step = num_frames // total_steps
     assert start_frame < num_frames - 1
     end_frame = end_frame if end_frame else num_frames
