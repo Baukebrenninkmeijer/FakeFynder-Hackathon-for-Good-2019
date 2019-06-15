@@ -9,6 +9,11 @@ import pickle
 import shlex
 import json
 
+COMPRESSION_DIR = 'compression_detection'
+NUM_COLS = ['duration', 'duration_ts', 'nb_frames', 'width', 'bit_rate', 'width', 'height', 'coded_width',
+            'coded_height', 'start_time', 'bits_per_raw_sample', 'nal_length_size']
+DROP_COLS = ['disposition', 'tags']
+
 
 def findVideoMetada(pathToInputVideo):
     cmd = "ffprobe -v quiet -print_format json -show_streams"
@@ -66,14 +71,10 @@ def train_classifier(data=None, X=None, Y=None, path=None, save=False):
         copy = data.drop(['class'], axis=1)
         classes = data['class']
 
-    drop = ['disposition', 'tags']
-    copy = copy.drop(drop, axis=1)
-
-    num_cols = ['duration', 'duration_ts', 'nb_frames', 'width', 'bit_rate', 'width', 'height', 'coded_width',
-                'coded_height', 'start_time']
+    copy = copy.drop(DROP_COLS, axis=1)
 
     # convert columns like 'bit_rate' to float dtype
-    copy.loc[:, num_cols] = copy[num_cols].astype('float')
+    copy.loc[:, NUM_COLS] = copy[NUM_COLS].astype('float')
 
     copy = copy._get_numeric_data()
 
@@ -93,27 +94,34 @@ def train_classifier(data=None, X=None, Y=None, path=None, save=False):
 
 
 def classify_video(path):
-    drop = ['disposition', 'tags']
-    num_cols = ['duration', 'duration_ts', 'nb_frames', 'width', 'bit_rate']
-    columns = pickle.load(open('columns.pkl', 'rb'))
-    medians = pickle.load(open('medians.pkl', 'rb'))
+    columns = pickle.load(open(f'{COMPRESSION_DIR}/columns.pkl', 'rb'))
+    medians = pickle.load(open(f'{COMPRESSION_DIR}/medians.pkl', 'rb'))
 
     metadata_dict = findVideoMetada(path)
     metadata = pd.DataFrame([metadata_dict])
+
+
+    metadata = metadata.drop(DROP_COLS, axis=1)
+
+    # convert columns like 'bit_rate' to float dtype
+    # print(metadata)
+    metadata[NUM_COLS] = metadata[NUM_COLS].astype('float')
+
+    metadata = metadata._get_numeric_data()
+    bool_cols = metadata.select_dtypes(include=['bool']).columns
+    metadata[bool_cols] = metadata[bool_cols].astype('int')
+
     for col in columns:
         if col not in metadata.columns.tolist():
             metadata[col] = medians.get(col, 0)
 
-    metadata = metadata.drop(drop, axis=1)
+    # cat_cols = metadata.select_dtypes(['object']).columns
+    # dummies = pd.get_dummies(metadata[cat_cols])
+    # metadata[dummies.columns] = dummies
+    # metadata = metadata.drop(cat_cols, axis=1)
+    metadata = metadata.sort_index(axis=1)
 
-    # convert columns like 'bit_rate' to float dtype
-    metadata[num_cols] = metadata[num_cols].astype('float')
-
-    cat_cols = metadata.select_dtypes(['object']).columns
-    dummies = pd.get_dummies(metadata[cat_cols])
-    metadata[dummies.columns] = dummies
-    metadata = metadata.drop(cat_cols, axis=1)
-    model = pickle.load(open('model.pkl', 'rb'))
+    model = pickle.load(open(f'{COMPRESSION_DIR}/model.pkl', 'rb'))
     prediction = model.predict(metadata)[0]
     return prediction
 

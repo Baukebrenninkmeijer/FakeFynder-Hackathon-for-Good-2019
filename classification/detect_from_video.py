@@ -109,7 +109,7 @@ def predict_with_model(image, model, post_function=nn.Softmax(dim=1),
 
 
 def test_full_image_network(video_path, output_path, model=None, model_path=None,
-                            start_frame=0, end_frame=None, cuda=cuda):
+                            start_frame=0, end_frame=None, threshold=.1, cuda=cuda):
     """
     Reads a video and evaluates a subset of frames with the a detection network
     that takes in a full frame. Outputs are only given if a face is present
@@ -157,25 +157,29 @@ def test_full_image_network(video_path, output_path, model=None, model_path=None
 
     # Frame numbers and length of output video
     frame_num = 0
+    predictions = []
 
-    analysed_percentage = .10
-    total_steps = num_frames * analysed_percentage
+    analyse_percentage = .10
+    total_steps = int(num_frames * analyse_percentage)
     frame_step = num_frames // total_steps
 
     assert start_frame < num_frames - 1
     end_frame = end_frame if end_frame else num_frames
     pbar = tqdm(total=end_frame - start_frame)
+    # print(total_steps, frame_step, end_frame)
 
     while reader.isOpened():
-        reader.set(1, frame_num)
+        # print(frame_num, total_steps, frame_num/num_frames)
+        vid_location = frame_num/num_frames
+        reader.set(1, vid_location)
         _, image = reader.read()
         if image is None:
             break
         frame_num += frame_step
 
-        if frame_num < start_frame:
-            continue
-        pbar.update(1)
+        # if frame_num < start_frame:
+        #     continue
+        pbar.update(frame_step)
 
         # Image size
         height, width = image.shape[:2]
@@ -200,9 +204,10 @@ def test_full_image_network(video_path, output_path, model=None, model_path=None
             # Actual prediction using our model
             prediction, output = predict_with_model(cropped_face, model,
                                                     cuda=cuda)
+            predictions.append(prediction)
             # ------------------------------------------------------------------
 
-            print('prediction = ', prediction)
+            tqdm.write(f'prediction = {prediction}')
 
             # Text and bb
             x = face.left()
@@ -227,13 +232,18 @@ def test_full_image_network(video_path, output_path, model=None, model_path=None
         cv2.waitKey(33)  # About 30 fps
         writer.write(image)
     pbar.close()
-    cap.release()
+    reader.release()
     cv2.destroyAllWindows()
     if writer is not None:
         writer.release()
         print('Finished! Output saved under {}'.format(output_path))
     else:
         print('Input video file was empty')
+    import numpy as np
+    if np.mean(predictions) > threshold:
+        return 1
+    else:
+        return 0
 
 
 if __name__ == '__main__':

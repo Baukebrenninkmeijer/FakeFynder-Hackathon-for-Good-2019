@@ -1,8 +1,6 @@
 import sys
 import glob
 sys.path.append('./classification')
-
-sys.path.append('../classification')
 sys.path.append('..')
 
 from app import app
@@ -10,6 +8,7 @@ from classification.detect_from_video import test_full_image_network
 from classification.network import models
 import torch
 from app.download_yt import download_video
+from compression_detection import compression_detection
 
 import os
 from flask import Flask, flash, request, redirect, url_for, render_template
@@ -27,14 +26,14 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 cuda = False
 
-# base_weights_path = 'classification/weights/face_detection/xception'
-# model_full_path = f'{base_weights_path}/all_raw.p'
-# model_77_path = f'{base_weights_path}/all_c23.p'
-# model_60_path = f'{base_weights_path}/all_c40.p'
+base_weights_path = 'classification/weights/face_detection/xception'
+model_full_path = f'{base_weights_path}/all_raw.p'
+model_77_path = f'{base_weights_path}/all_c23.p'
+model_60_path = f'{base_weights_path}/all_c40.p'
 
-# model_full = torch.load(model_full_path, map_location=lambda storage, loc: storage)
-# model_77 = torch.load(model_77_path, map_location=lambda storage, loc: storage)
-# model_60 = torch.load(model_60_path, map_location=lambda storage, loc: storage)
+model_full = torch.load(model_full_path, map_location=lambda storage, loc: storage)
+model_77 = torch.load(model_77_path, map_location=lambda storage, loc: storage)
+model_60 = torch.load(model_60_path, map_location=lambda storage, loc: storage)
 
 
 def allowed_file(filename):
@@ -44,7 +43,7 @@ def allowed_file(filename):
 
 @app.route('/')
 def index():
-    return render_template('Upload.html')
+    return render_template('Upload2.html')
 
 
 # POST IMAGE 
@@ -60,10 +59,6 @@ def upload_file():
         if 'data_file' not in request.files and 'youtube_link' not in request.form:
             flash('No file part')
             return redirect(request.url)
-
-        # if predicted_class == '0.6':
-        # elif predicted_class == '0.77':
-        # elif predicted_class == 'original':
 
         if 'data_file' in request.files:
             file = request.files['data_file']
@@ -98,17 +93,34 @@ def upload_file():
         # print(filename, ' was uploaded.')
         # print(filepath)
 
+        predicted_class = compression_detection.classify_video(filepath)
 
+        if predicted_class == '0.6':
+            fake_prediction = test_full_image_network(filepath, model=model_60, output_path=OUTPUT_PATH,
+                                    start_frame=0, end_frame=None, cuda=cuda)
 
-        test_full_image_network(filepath, MODEL_PATH, OUTPUT_PATH,
-                            start_frame=0, end_frame=None, cuda=cuda)
+        elif predicted_class == '0.77':
+            fake_prediction = test_full_image_network(filepath, model=model_77, output_path=OUTPUT_PATH,
+                                    start_frame=0, end_frame=None, cuda=cuda)
+        elif predicted_class == 'original':
+            fake_prediction = test_full_image_network(filepath, model=model_full, output_path=OUTPUT_PATH,
+                                    start_frame=0, end_frame=None, cuda=cuda)
+        else:
+            fake_prediction = None
 
-        return render_template('Upload.html')
+        if fake_prediction:
+            return render_template('fake.hmtl')
+        elif not fake_prediction:
+            return render_template('real.html')
+        else:
+            return render_template('error.html')
+
     else:
         return render_template('error.html')
 
-# if __name__ == "__main__":
 
+# if __name__ == "__main__":
+#
 #     # run app
 #     app.run(host = "0.0.0.0", port = int("5000"))
 

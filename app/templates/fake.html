@@ -11,7 +11,7 @@
 <body>
     <div style="padding: 50px;">
         <!-- Logo  -->
-        <img class="ui centered huge image" src="/static/logo.png">
+        <img class="ui centered huge image" src="/miscellaneous/logo.png">
         <!-- Upload URL  -->
         <div style="text-align: center;">
             <form class="ui form fields" method="POST">
@@ -52,22 +52,20 @@
         </div>
     </div>
     <!-- Dialog  -->
-    <div class="ui basic modal" id="remove">
-        <div class="ui icon header">
-            <i class="red exclamation icon"></i>
-            Are you sure you want to remove selected items?
-        </div>
-        <div class="actions">
-            <div class="ui basic cancel inverted button">
-                <i class="remove icon"></i>
-                No
-            </div>
-            <div class="ui red ok inverted button">
-                <i class="checkmark icon"></i>
-                Yes
-            </div>
-        </div>
-    </div>
+	<div class="ui basic modal">
+		<div class="ui icon header">
+			<i class="red warning circle icon"></i>
+			The video you sent is fake.
+		</div>
+		<div class="actions">
+			<div class="ui ok inverted button">
+				<i class="checkmark icon"></i>
+				Ok
+			</div>
+		</div>
+	</div>
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+	 crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
     <script src="{{ url_for('static', filename='dash_files/js/jquery-1.12.3.min.js')}}"></script>
     <script type="text/javascript">
@@ -87,6 +85,7 @@
                 }
             });
         });
+        $('.ui.basic.modal').modal('show');
     </script>
 </body>
 
