@@ -10,7 +10,7 @@ import torch
 import pretrainedmodels
 import torch.nn as nn
 import torch.nn.functional as F
-from network.xception import xception
+from classification.network.xception import xception
 import math
 import torchvision
 
@@ -23,15 +23,14 @@ def return_pytorch04_xception(pretrained=True):
         model.fc = model.last_linear
         del model.last_linear
         state_dict = torch.load(
-            'C:/Users/bauke/Projects/FaceForensics/classification/weights/face_detection/xception/all_raw.p')
-#         print(type(state_dict))
-#         print(state_dict)
-#         for name, weights in state_dict.items():
-#             if 'pointwise' in name:
-#                 state_dict[name] = weights.unsqueeze(-1).unsqueeze(-1)
-#         model.load_state_dict(state_dict)
-#         model.last_linear = model.fc
-#         del model.fc
+            '/home/stijn/Desktop/xception-b5690688.pth')
+        print(type(state_dict))
+        for name, weights in state_dict.items():
+            if 'pointwise' in name:
+                state_dict[name] = weights.unsqueeze(-1).unsqueeze(-1)
+        model.load_state_dict(state_dict)
+        model.last_linear = model.fc
+        del model.fc
     return model
 
 

@@ -1,0 +1,152 @@
+/*
+#############
+### page_result
+#############
+
+*/
+
+
+
+#img_uploaded {
+    border: 1px dotted black;
+    display: block;
+    max-width: 350px;
+    max-height: 350px;
+    width: auto;
+    height: auto;
+    /*margin-bottom:7px;*/
+}
+
+.result_prob {
+    color: #f75932;
+    font-weight: 700;
+    font-style: italic;
+}
+
+
+.page_results_body > button{
+margin-top:5px;
+}
+
+#result_text > h1{
+    margin-bottom:10px;
+}
+
+#result_text{
+    margin-bottom:5px;
+    margin-bottom:10px;
+}
+
+#result_text p{
+    font-style:italic;
+    font-size:20px;
+    margin-top:5px;
+    margin-bottom:5px;
+}
+
+/*
+##############
+### page_upload
+##############
+
+ */
+
+
+h1,
+h2,
+body, p {
+    font-family: Lato;
+}
+
+#page_upload h1 {
+    font-size: 22px;
+    /**/
+    margin-top: 0px;
+    margin-bottom: 5px;
+}
+
+#page_upload h2 {
+    font-style: italic;
+    font-weight: 500;
+    font-size: 14px;
+    /**/
+    margin-top: 0px;
+    margin-bottom: 5px;
+}
+
+#container_image_upload_form {
+    top: 50px;
+    left: 50px;
+}
+
+#container_image_upload_form #upload_image {
+    border: 1px dotted black;
+    width: 220px;
+    padding: 2px 2px 2px 2px;
+}
+
+
+/* image upload button*/
+
+.btn {
+    display: inline-block;
+    padding: 4px 10px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    /**/
+    background-color: #f75932;
+    border: 1px solid #000000;
+    /**/
+    color: #ffffff;
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+    text-decoration: none;
+    text-shadow: 0px -1px 0px #5b6178;
+}
+
+.btn:hover {
+    background-color: #fa937a;
+}
+
+.btn:focus {
+    outline: 0;
+}
+
+
+/*image upload button disabled before image file chosen*/
+
+.btn_disabled,
+.btn_disabled:hover {
+    cursor: not-allowed;
+    background-color: #d3d3d3;
+    color: #fff;
+    text-shadow: none;
+}
+
+
+/* FONTS */
+
+@font-face {
+    font-family: Lato;
+    src: url(/static/dash_files/fonts/Lato-Regular.ttf);
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: Lato;
+    src: url(/static/dash_files/fonts/Lato-Hairline.ttf);
+    font-weight: 200;
+}
+
+@font-face {
+    font-family: Lato;
+    src: url(/static/dash_files/fonts/Lato-Light.ttf);
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: Lato;
+    src: url(/static/dash_files/fonts/Lato-Bold.ttf);
+    font-weight: 700;
+}

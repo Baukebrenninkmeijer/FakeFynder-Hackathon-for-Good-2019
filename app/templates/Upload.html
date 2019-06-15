@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Fine-Tuned CNN Results </title>
+<link rel="stylesheet" href="{{ url_for('static', filename='dash_files/style/style.css')}}" />
+
+<body class="page_upload_body">
+    <div class="container" id="page_upload">
+        <h1>Fine-Tuned CNN Results </h1>
+        <h2>Upload an image of either a dog or a cat:</h2>
+        <!--  -->
+        <!-- UPLOAD FORM -->
+        <form id="container_image_upload_form" action="/upload" method="POST" enctype="multipart/form-data">
+            <div>
+                <input name="data_file" type="file" id="upload_image">
+                <input class="btn upload btn_disabled" type="submit" value="Upload" id="upload_button">
+            </div>
+        </form>
+    </div>
+</body>
+<!--  -->
+<!-- JS -->
+<script src="{{ url_for('static', filename='dash_files/js/jquery-1.12.3.min.js')}}"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+
+    // activate submit button once file selected
+    $('#upload_image').bind("click", function() {
+        $('#upload_button').removeClass("btn_disabled");
+        $('#upload_button').focus();
+    });
+
+    // check file attached to uploader
+    $('#upload_button').bind("click", function() {
+        if (!$('#upload_image').val()) {
+            alert("please first choose an image file then click upload");
+            return false;
+        }
+    });
+});
+</script>
