@@ -9,12 +9,21 @@
         <h2>Upload an image of either a dog or a cat:</h2>
         <!--  -->
         <!-- UPLOAD FORM -->
+
         <form id="container_image_upload_form" action="/upload" method="POST" enctype="multipart/form-data">
             <div>
                 <input name="data_file" type="file" id="upload_image">
                 <input class="btn upload btn_disabled" type="submit" value="Upload" id="upload_button">
             </div>
         </form>
+
+        <form id="container_ytlink_upload_form" action="/upload" method="POST" enctype="multipart/form-data">
+            <div>
+                <input name="youtube_link" type="url" id="upload_url">
+                <input class="btn btn_disabled" type="submit" value="Upload" id="upload_url_button">
+            </div>
+        </form>
+
     </div>
 </body>
 <!--  -->
@@ -29,6 +38,12 @@ $(document).ready(function() {
         $('#upload_button').focus();
     });
 
+    // activate submit button once url selected
+    $('#upload_url').bind("click", function() {
+        $('#upload_url_button').removeClass("btn_disabled");
+        // $('#upload_url_button').focus();
+    });
+
     // check file attached to uploader
     $('#upload_button').bind("click", function() {
         if (!$('#upload_image').val()) {
@@ -36,5 +51,12 @@ $(document).ready(function() {
             return false;
         }
     });
+
+    // $('#upload_button').bind("click", function() {
+    //     if (!$('#upload_image').val()) {
+    //         alert("please first choose an image file then click upload");
+    //         return false;
+    //     }
+    // });
 });
 </script>

@@ -6,7 +6,9 @@
 data/
 
 classification/weights/
-classification/working_dir/
+classification/data_dir/
 
+*/__pycache__/
+__pycache__/
 app/__pycache__/
 

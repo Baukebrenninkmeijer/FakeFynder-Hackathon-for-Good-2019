@@ -4,7 +4,7 @@ sys.path.append('./classification')
 from app import app
 from classification.detect_from_video import test_full_image_network
 from classification.network import models
-# from download_yt import download_video
+from app.download_yt import download_video
 
 import os
 from flask import Flask, flash, request, redirect, url_for, render_template
@@ -39,35 +39,41 @@ def upload_file():
     if request.method =='POST':
               # check if the post request has the file part
         # if 'data_file' in request.files:
-        if 'data_file' not in request.files and 'youtube_link' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        if 'data_file' in request.files:
-            file = request.files['data_file']
-        elif 'youtube_link' in request.files:
-            file = request.files['youtube_link']
+        if 'youtube_link' in request.files:
+            print('turbo tetten')
 
-        # if user does not select file, browser also
-        # submit an empty part without filename
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            if not 'data_file' in request.files:
-                download_video()
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(filepath)
-            # return redirect(url_for('uploaded_file',
-            #                         filename=filename))
+        # if 'data_file' not in request.files and 'youtube_link' not in request.files:
+        #     flash('No file part')
+        #     return redirect(request.url)
 
-        print(filename, ' was uploaded.')
-        print(filepath)
+        # # if user does not select file, browser also
+        # # submit an empty part without filename
+        # if file.filename == '':
+        #     flash('No selected file')
+        #     return redirect(request.url)
+        # if file and allowed_file(file.filename):
+        #     filename = secure_filename(file.filename)
+        #     print('filename = ', filename)
+        # else:       
+        #     return render_template('error.html')
+
+        # if 'data_file' in request.files:
+        #     file = request.files['data_file']
+        #     filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        #     file.save(filepath)
+        # elif 'youtube_link' in request.files:
+        #     download_video(filename)
+        #     file = request.files['youtube_link']
+        # # if not 'data_file' in request.files:
+        # #         download_video()
+
+        # print(filename, ' was uploaded.')
+        # print(filepath)
 
 
 
-        test_full_image_network(filepath, MODEL_PATH, OUTPUT_PATH,
-                            start_frame=0, end_frame=None, cuda=cuda)
+        # test_full_image_network(filepath, MODEL_PATH, OUTPUT_PATH,
+        #                     start_frame=0, end_frame=None, cuda=cuda)
 
         return render_template('Upload.html')
     else:       
