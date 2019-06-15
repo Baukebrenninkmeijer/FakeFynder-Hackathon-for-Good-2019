@@ -1,19 +1,20 @@
 import sys
-sys.path.append('/home/stijn/Documents/Projects/HackaGAN/facefor/classification')
+sys.path.append('./classification')
 
 from app import app
 from classification.detect_from_video import test_full_image_network
 from classification.network import models
+# from download_yt import download_video
 
 import os
 from flask import Flask, flash, request, redirect, url_for, render_template
 from werkzeug.utils import secure_filename
 
 
-UPLOAD_FOLDER = '/home/stijn/Desktop/uploads'
+UPLOAD_FOLDER = './classification/working_dir/uploads'
 ALLOWED_EXTENSIONS = set(['mp4', 'avi'])
-MODEL_PATH = '/home/stijn/Downloads/faceforensics++_models_subset/full/xception/full_c23.p'
-OUTPUT_PATH = '/home/stijn/Desktop/results'
+MODEL_PATH = './classification/weights/full/xception/full_c23.p'
+OUTPUT_PATH = './classification/working_dir/results'
 
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
@@ -37,10 +38,15 @@ def upload_file():
 
     if request.method =='POST':
               # check if the post request has the file part
-        if 'data_file' not in request.files:
+        # if 'data_file' in request.files:
+        if 'data_file' not in request.files and 'youtube_link' not in request.files:
             flash('No file part')
             return redirect(request.url)
-        file = request.files['data_file']
+        if 'data_file' in request.files:
+            file = request.files['data_file']
+        elif 'youtube_link' in request.files:
+            file = request.files['youtube_link']
+
         # if user does not select file, browser also
         # submit an empty part without filename
         if file.filename == '':
@@ -48,6 +54,8 @@ def upload_file():
             return redirect(request.url)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
+            if not 'data_file' in request.files:
+                download_video()
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
             # return redirect(url_for('uploaded_file',

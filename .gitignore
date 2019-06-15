@@ -5,6 +5,8 @@
 
 data/
 
-classification/
+classification/weights/
+classification/working_dir/
 
 app/__pycache__/
+
