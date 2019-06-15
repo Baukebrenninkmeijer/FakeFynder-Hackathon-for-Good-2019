@@ -1,6 +1,9 @@
 import sys
 sys.path.append('./classification')
 
+sys.path.append('../classification')
+sys.path.append('..')
+
 from app import app
 from classification.detect_from_video import test_full_image_network
 from classification.network import models
@@ -22,15 +25,20 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 cuda = False
 
+# model_full =
+# model_77 =
+# model_60 =
+
 
 def allowed_file(filename):
     return '.' in filename and \
-        filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 @app.route('/')
 def index():
     return render_template('Upload.html')
+
 
 # POST IMAGE 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -76,7 +84,7 @@ def upload_file():
         #                     start_frame=0, end_frame=None, cuda=cuda)
 
         return render_template('Upload.html')
-    else:       
+    else:
         return render_template('error.html')
 
 # if __name__ == "__main__":
