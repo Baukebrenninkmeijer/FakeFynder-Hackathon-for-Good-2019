@@ -51,8 +51,6 @@ def index():
 def upload_file():
 
     if request.method =='POST':
-              # check if the post request has the file part
-        # if 'data_file' in request.files:
         if 'youtube_link' in request.form:
             print(request.form['youtube_link'])
 
@@ -75,30 +73,17 @@ def upload_file():
             os.chdir(UPLOAD_FOLDER)
             download_video(file)
             os.chdir('../../..')
-            os.listdir(UPLOAD_FOLDER)
-            # print latest_file
-            list_of_files = glob.glob(UPLOAD_FOLDER)
+            list_of_files = glob.glob(f'{UPLOAD_FOLDER}/*')
             latest_file = max(list_of_files, key=os.path.getctime)
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], latest_file)
-            print(os.getcwd())
-        else:       
+            filepath = latest_file
+        else:
             return render_template('error.html')
-
-        # if user does not select file, browser also
-        # submit an empty part without filename
-
-        # if not 'data_file' in request.files:
-        #         download_video()
-
-        # print(filename, ' was uploaded.')
-        # print(filepath)
 
         predicted_class = compression_detection.classify_video(filepath)
 
         if predicted_class == '0.6':
             fake_prediction = test_full_image_network(filepath, model=model_60, output_path=OUTPUT_PATH,
                                     start_frame=0, end_frame=None, cuda=cuda)
-
         elif predicted_class == '0.77':
             fake_prediction = test_full_image_network(filepath, model=model_77, output_path=OUTPUT_PATH,
                                     start_frame=0, end_frame=None, cuda=cuda)
@@ -108,29 +93,13 @@ def upload_file():
         else:
             fake_prediction = None
 
-        if fake_prediction:
+        # print(f'fake_prediction: {fake_prediction}')
+        if fake_prediction == 1:
             return render_template('fake.hmtl')
-        elif not fake_prediction:
+        elif fake_prediction == 0:
             return render_template('real.html')
         else:
             return render_template('error.html')
 
     else:
         return render_template('error.html')
-
-
-# if __name__ == "__main__":
-#
-#     # run app
-#     app.run(host = "0.0.0.0", port = int("5000"))
-
-
-# '''
-# <!doctype html>
-# <title>Upload new File</title>
-# <h1>Upload new File</h1>
-# <form method=post enctype=multipart/form-data>
-#   <input type=file name=file>
-#   <input type=submit value=Upload>
-# </form>
-# '''

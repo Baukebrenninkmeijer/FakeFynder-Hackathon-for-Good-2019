@@ -20,7 +20,7 @@
                     <div class="ui icon input field">
                         <input class="prompt" type="url" placeholder="URL" name="youtube_link">
                         <button class="ui yellow button upload btn btn_disabled right labeled icon" type="submit"
-                            value="Upload" id="upload_button">
+                            value="Upload" id="upload_button2">
                             Check
                             <i class="ui user secret icon"></i>
                         </button>
@@ -40,7 +40,7 @@
                         <div style="width: 20%;" class="ui icon input field">
                             <input class="prompt" name="data_file" type="file" id="upload_data">
                             <button class="ui orange button upload btn btn_disabled right labeled icon" type="submit"
-                                value="Upload" id="upload_button2">
+                                value="Upload" id="upload_button">
                                 Upload
                                 <i class="ui upload icon"></i>
                             </button>
@@ -68,31 +68,11 @@
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+     crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
-    <script src="{{ url_for('static', filename='dash_files/js/jquery-1.12.3.min.js')}}"></script>
     <script type="text/javascript">
-        $(document).ready(function () {
 
-            // activate submit button once file selected
-            $('#upload_data').bind("click", function () {
-                $('#upload_button').removeClass("btn_disabled");
-                $('#upload_button').focus();
-            });
-
-            // check file attached to uploader
-            $('#upload_button').bind("click", function () {
-                if (!$('#upload_data').val()) {
-                    alert("please first choose an image file then click upload");
-                    return false;
-                }
-            });
-
-             // activate submit button once file selected
-            $('#upload_link').bind("click", function () {
-                $('#upload_button2').removeClass("btn_disabled");
-                $('#upload_button2').focus();
-            });
-        });
     </script>
 </body>
 
