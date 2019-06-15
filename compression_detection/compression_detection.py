@@ -56,8 +56,15 @@ def aggregate_metadata(path):
     return data, classes
 
 
-def train_classifier(path):
-    copy, classes = aggregate_metadata(path)
+def train_classifier(data=None, X=None, Y=None, path=None, save=False):
+    if path is not None:
+        copy, classes = aggregate_metadata(path)
+    elif X is not None and Y is not None:
+        copy = X
+        classes = Y
+    else:
+        copy = data.drop(['class'], axis=1)
+        classes = data['class']
 
     drop = ['disposition', 'tags']
     copy = copy.drop(drop, axis=1)
@@ -68,20 +75,20 @@ def train_classifier(path):
     # convert columns like 'bit_rate' to float dtype
     copy.loc[:, num_cols] = copy[num_cols].astype('float')
 
-    cat_cols = copy.select_dtypes(['object']).columns
-    dummies = pd.get_dummies(copy[cat_cols])
-    copy = pd.concat([copy, dummies], axis=1, sort=False)
-    copy = copy.drop(cat_cols, axis=1)
+    copy = copy._get_numeric_data()
 
-    model = DecisionTreeClassifier()
+    model = DecisionTreeClassifier(max_depth=5)
     copy = copy.sort_index(axis=1)
     x_train, x_test, y_train, y_test = train_test_split(copy, classes, test_size=0.2, shuffle=True)
     model.fit(x_train, y_train)
 
-    pickle.dump(model, open('model.pkl', 'wb'))
-    pickle.dump(copy.columns.tolist(), open('columns.pkl', 'wb'))
+    if save:
+        pickle.dump(model, open('model.pkl', 'wb'))
+        pickle.dump(copy.columns.tolist(), open('columns.pkl', 'wb'))
 
     score = model.score(x_test, y_test)
+    preds = model.predict(x_test)
+    print(np.unique(preds))
     print(f'Model saved. Model score: {score}')
 
 

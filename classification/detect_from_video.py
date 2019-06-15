@@ -29,6 +29,7 @@ from classification.dataset.transform import xception_default_data_transforms
 
 cuda = False
 
+
 def get_boundingbox(face, width, height, scale=1.3, minsize=None):
     """
     Expects a dlib face to generate a quadratic bounding box.
@@ -101,13 +102,13 @@ def predict_with_model(image, model, post_function=nn.Softmax(dim=1),
     output = post_function(output)
 
     # Cast to desired
-    _, prediction = torch.max(output, 1)    # argmax
+    _, prediction = torch.max(output, 1)  # argmax
     prediction = float(prediction.cpu().numpy())
 
     return int(prediction), output
 
 
-def test_full_image_network(video_path, model_path, output_path,
+def test_full_image_network(video_path, output_path, model=None, model_path=None,
                             start_frame=0, end_frame=None, cuda=cuda):
     """
     Reads a video and evaluates a subset of frames with the a detection network
@@ -127,7 +128,7 @@ def test_full_image_network(video_path, model_path, output_path,
     # Read and write
     reader = cv2.VideoCapture(video_path)
 
-    video_fn = video_path.split('/')[-1].split('.')[0]+'.avi'
+    video_fn = video_path.split('/')[-1].split('.')[0] + '.avi'
     os.makedirs(output_path, exist_ok=True)
     fourcc = cv2.VideoWriter_fourcc(*'MJPG')
     fps = reader.get(cv2.CAP_PROP_FPS)
@@ -139,11 +140,13 @@ def test_full_image_network(video_path, model_path, output_path,
 
     # Load model
     # model, *_ = model_selection(modelname='xception', num_out_classes=2)
-    if model_path is not None:
-        model = torch.load(model_path, map_location=lambda storage, loc: storage)
-        print('Model found in {}'.format(model_path))
-    else:
-        print('No model found, initializing random model.')
+    if model is None:
+        if model_path is not None:
+            model = torch.load(model_path, map_location=lambda storage, loc: storage)
+            print('Model found in {}'.format(model_path))
+        else:
+            print('No model found, initializing random model.')
+
     if cuda:
         model = model.cuda()
 
@@ -161,10 +164,10 @@ def test_full_image_network(video_path, model_path, output_path,
 
     assert start_frame < num_frames - 1
     end_frame = end_frame if end_frame else num_frames
-    pbar = tqdm(total=end_frame-start_frame)
+    pbar = tqdm(total=end_frame - start_frame)
 
     while reader.isOpened():
-        reader.set(2, frame_num)
+        reader.set(1, frame_num)
         _, image = reader.read()
         if image is None:
             break
@@ -192,7 +195,7 @@ def test_full_image_network(video_path, model_path, output_path,
             # --- Prediction ---------------------------------------------------
             # Face crop with dlib and bounding box scale enlargement
             x, y, size = get_boundingbox(face, width, height)
-            cropped_face = image[y:y+size, x:x+size]
+            cropped_face = image[y:y + size, x:x + size]
 
             # Actual prediction using our model
             prediction, output = predict_with_model(cropped_face, model,
@@ -210,7 +213,7 @@ def test_full_image_network(video_path, model_path, output_path,
             color = (0, 255, 0) if prediction == 0 else (0, 0, 255)
             output_list = ['{0:.2f}'.format(float(x)) for x in
                            output.detach().cpu().numpy()[0]]
-            cv2.putText(image, str(output_list)+'=>'+label, (x, y+h+30),
+            cv2.putText(image, str(output_list) + '=>' + label, (x, y + h + 30),
                         font_face, font_scale,
                         color, thickness, 2)
             # draw box over face
@@ -221,7 +224,7 @@ def test_full_image_network(video_path, model_path, output_path,
 
         # Show
         cv2.imshow('test', image)
-        cv2.waitKey(33)     # About 30 fps
+        cv2.waitKey(33)  # About 30 fps
         writer.write(image)
     pbar.close()
     cap.release()

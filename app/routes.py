@@ -7,6 +7,7 @@ sys.path.append('..')
 from app import app
 from classification.detect_from_video import test_full_image_network
 from classification.network import models
+import torch
 from app.download_yt import download_video
 
 import os
@@ -25,9 +26,14 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 cuda = False
 
-# model_full =
-# model_77 =
-# model_60 =
+base_weights_path = 'classification/weights/face_detection/xception'
+model_full_path = f'{base_weights_path}/all_raw.p'
+model_77_path = f'{base_weights_path}/all_c23.p'
+model_60_path = f'{base_weights_path}/all_c40.p'
+
+model_full = torch.load(model_full_path, map_location=lambda storage, loc: storage)
+model_77 = torch.load(model_77_path, map_location=lambda storage, loc: storage)
+model_60 = torch.load(model_60_path, map_location=lambda storage, loc: storage)
 
 
 def allowed_file(filename):
@@ -64,6 +70,9 @@ def upload_file():
         #     print('filename = ', filename)
         # else:       
         #     return render_template('error.html')
+        # if predicted_class == '0.6':
+        # elif predicted_class == '0.77':
+        # elif predicted_class == 'original':
 
         # if 'data_file' in request.files:
         #     file = request.files['data_file']
