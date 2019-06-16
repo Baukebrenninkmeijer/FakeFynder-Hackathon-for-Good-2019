@@ -58,6 +58,7 @@ def upload_file():
     if request.method =='POST':
         fake = None
         youtube_url = None
+        upload_fname = None
         history = dbio.read_history()
 
         # if 'youtube_link' in request.form:
@@ -75,6 +76,7 @@ def upload_file():
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
                 print('filename = ', filename)
+            upload_fname = file.filename
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
 
@@ -123,7 +125,8 @@ def upload_file():
 
         # print(f'fake_prediction: {fake_prediction}')
         if fake_prediction is not None:
-            history = history.append({'hash': hash, 'link': youtube_url, 'fake': fake_prediction}, ignore_index=True)
+            history = history.append({'hash': hash, 'link': youtube_url, 'filename': upload_fname,
+                                      'fake': fake_prediction}, ignore_index=True)
             dbio.write_history(history)
 
         if fake_prediction == 1:
