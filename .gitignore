@@ -5,8 +5,9 @@
 
 data/
 
-classification/weights/
-classification/data_dir/
+classification/weights/*
+classification/data_dir/uploads/*
+classification/data_dir/results/*
 
 */__pycache__/
 __pycache__/
