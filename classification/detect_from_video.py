@@ -161,7 +161,7 @@ def test_full_image_network(video_path, output_path, model=None, model_path=None
 
     analyse_percentage = .10
     # total_steps = int(num_frames * analyse_percentage)
-    total_steps = 20
+    total_steps = 10
     frame_step = num_frames // total_steps
 
     assert start_frame < num_frames - 1

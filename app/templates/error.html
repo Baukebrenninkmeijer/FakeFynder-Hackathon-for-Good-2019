@@ -5,71 +5,83 @@
     <title>FakeFynder</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
     <link rel="icon" type="image/ico"
-        href="data:image/png;base64,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" />
+          href="data:image/png;base64,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"/>
 </head>
 
 <body>
-    <div style="padding: 50px;">
-        <!-- Logo  -->
-        <img class="ui centered large image" src="/static/logo.png">
-        <!-- Upload URL  -->
-        <div style="text-align: center;">
-            <form class="ui form fields" method="POST" id="container_url_upload_form" action="/upload">
-                <div style="width: 100%;">
-                    <h4>Enter URL</h4>
-                    <div class="ui icon input field">
-                        <input class="prompt" type="url" placeholder="URL" name="youtube_link">
-                        <button class="ui yellow button upload btn btn_disabled right labeled icon" type="submit"
+<div style="padding: 50px;">
+    <!-- Logo  -->
+    <img class="ui centered large image" src="/static/logo.png">
+    <!-- Upload URL  -->
+    <div style="text-align: center;">
+        <form class="ui form fields" method="POST" id="container_url_upload_form" action="/upload">
+            <div style="width: 100%;">
+                <h4>Enter URL</h4>
+                <div class="ui icon input field">
+                    <input class="prompt" type="url" placeholder="URL" name="youtube_link">
+                    <button class="ui yellow button upload btn btn_disabled right labeled icon" type="submit"
                             value="Upload" id="upload_button2">
-                            Check
-                            <i class="ui user secret icon"></i>
+                        Check
+                        <i class="ui user secret icon"></i>
+                    </button>
+                </div>
+                <div class="results"></div>
+            </div>
+        </form>
+    </div>
+    <br>
+    <!-- Upload MP4  -->
+    <div style="text-align: center;">
+        <form class="ui form fields" id="container_image_upload_form" action="/upload" method="POST"
+              enctype="multipart/form-data">
+            <div style="width: 100%;">
+                <h4>Upload video (MP4)</h4>
+                <div class="ui">
+                    <div style="width: 20%;" class="ui icon input field">
+                        <input class="prompt" name="data_file" type="file" id="upload_data">
+                        <button class="ui orange button upload btn btn_disabled right labeled icon" type="submit"
+                                value="Upload" id="upload_button">
+                            Upload
+                            <i class="ui upload icon"></i>
                         </button>
                     </div>
                     <div class="results"></div>
                 </div>
-            </form>
-        </div>
-        <br>
-        <!-- Upload MP4  -->
-        <div style="text-align: center;">
-            <form class="ui form fields" id="container_image_upload_form" action="/upload" method="POST"
-                enctype="multipart/form-data">
-                <div style="width: 100%;">
-                    <h4>Upload video (MP4)</h4>
-                    <div class="ui">
-                        <div style="width: 20%;" class="ui icon input field">
-                            <input class="prompt" name="data_file" type="file" id="upload_data">
-                            <button class="ui orange button upload btn btn_disabled right labeled icon" type="submit"
-                                value="Upload" id="upload_button">
-                                Upload
-                                <i class="ui upload icon"></i>
-                            </button>
-                        </div>
-                        <div class="results"></div>
-                    </div>
-                </div>
-            </form>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Dialog  -->
+<div class="ui basic modal">
+    <div class="ui icon header">
+        <i class="red warning circle icon"></i>
+        Something went wrong.
+    </div>
+    <div class="actions">
+        <div class="ui ok inverted button">
+            <i class="checkmark icon"></i>
+            Ok
         </div>
     </div>
-    <!-- Dialog  -->
-	<div class="ui basic modal">
-		<div class="ui icon header">
-			<i class="red warning circle icon"></i>
-			Something went wrong.
-		</div>
-		<div class="actions">
-			<div class="ui ok inverted button">
-				<i class="checkmark icon"></i>
-				Ok
-			</div>
-		</div>
-	</div>
-	<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
-	 crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
-    <script type="text/javascript">
-        $('.ui.basic.modal').modal('show');
-    </script>
+</div>
+<div class="ui basic modal" id="loading">
+    <div class="ui icon header">
+        <div class="loader" style="margin: auto;"></div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"
+        integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+<script type="text/javascript">
+    $('.ui.basic.modal').modal('show');
+
+    $('.upload').click(function () {
+        $('#loading').modal('show');
+
+    });
+</script>
 </body>
 
 </html>
