@@ -30,3 +30,9 @@ class DatabaseIO:
         res = pd.read_sql(table, self.engine, parse_dates=parse_dates)
         logger.info('Done.')
         return res
+
+    def read_history(self):
+        return self.read_data('history')
+
+    def write_history(self, df):
+        return self.write_data(df, 'history')

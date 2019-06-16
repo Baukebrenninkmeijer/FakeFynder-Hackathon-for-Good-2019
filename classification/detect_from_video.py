@@ -228,7 +228,7 @@ def test_full_image_network(video_path, output_path, model=None, model_path=None
             break
 
         # Show
-        cv2.imshow('test', image)
+        cv2.imshow('Frame', image)
         cv2.waitKey(33)  # About 30 fps
         writer.write(image)
     pbar.close()

@@ -13,6 +13,8 @@ from compression_detection import compression_detection
 import os
 from flask import Flask, flash, request, redirect, url_for, render_template
 from werkzeug.utils import secure_filename
+from library import *
+import hashlib
 
 
 UPLOAD_FOLDER = './classification/data_dir/uploads'
@@ -35,6 +37,9 @@ model_full = torch.load(model_full_path, map_location=lambda storage, loc: stora
 model_77 = torch.load(model_77_path, map_location=lambda storage, loc: storage)
 model_60 = torch.load(model_60_path, map_location=lambda storage, loc: storage)
 
+dbio = DatabaseIO()
+
+
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -51,8 +56,12 @@ def index():
 def upload_file():
 
     if request.method =='POST':
-        if 'youtube_link' in request.form:
-            print(request.form['youtube_link'])
+        fake = None
+        youtube_url = None
+        history = dbio.read_history()
+
+        # if 'youtube_link' in request.form:
+        #     print(request.form['youtube_link'])
 
         if 'data_file' not in request.files and 'youtube_link' not in request.form:
             flash('No file part')
@@ -68,16 +77,35 @@ def upload_file():
                 print('filename = ', filename)
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
+
         elif 'youtube_link' in request.form:
-            file = request.form['youtube_link']
+            youtube_url = request.form['youtube_link']
+
+            if youtube_url in history['link'].values:
+                fake = history.loc[history['link'] == youtube_url, 'fake'][0]
+
+            if fake is not None:
+                return render_template('fake.html') if fake else render_template('real.html')
+
             os.chdir(UPLOAD_FOLDER)
-            download_video(file)
+            download_video(youtube_url)
             os.chdir('../../..')
             list_of_files = glob.glob(f'{UPLOAD_FOLDER}/*')
             latest_file = max(list_of_files, key=os.path.getctime)
             filepath = latest_file
         else:
             return render_template('error.html')
+
+        hasher = hashlib.sha512()
+        with open(filepath, 'rb') as f:
+            buf = f.read()
+            hasher.update(buf)
+        hash = hasher.hexdigest()
+        if hash in history.hash.values:
+            fake = history.loc[history.hash == hash, 'hash'][0]
+
+        if fake is not None:
+            return render_template('fake.html') if fake else render_template('real.html')
 
         predicted_class = compression_detection.classify_video(filepath)
 
@@ -94,6 +122,10 @@ def upload_file():
             fake_prediction = None
 
         # print(f'fake_prediction: {fake_prediction}')
+        if fake_prediction is not None:
+            history = history.append({'hash': hash, 'link': youtube_url, 'fake': fake_prediction}, ignore_index=True)
+            dbio.write_history(history)
+
         if fake_prediction == 1:
             return render_template('fake.hmtl')
         elif fake_prediction == 0:
