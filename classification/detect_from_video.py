@@ -186,9 +186,9 @@ def test_full_image_network(video_path, output_path, model=None, model_path=None
         height, width = image.shape[:2]
 
         # Init output writer
-        if writer is None:
-            writer = cv2.VideoWriter(join(output_path, video_fn), fourcc, fps,
-                                     (height, width)[::-1])
+        # if writer is None:
+        #     writer = cv2.VideoWriter(join(output_path, video_fn), fourcc, fps,
+        #                              (height, width)[::-1])
 
         # 2. Detect with dlib
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -231,15 +231,15 @@ def test_full_image_network(video_path, output_path, model=None, model_path=None
         # Show
         cv2.imshow('Frame', image)
         cv2.waitKey(33)  # About 30 fps
-        writer.write(image)
+        # writer.write(image)
     pbar.close()
     reader.release()
     cv2.destroyAllWindows()
-    if writer is not None:
-        writer.release()
-        print('Finished! Output saved under {}'.format(output_path))
-    else:
-        print('Input video file was empty')
+    # if writer is not None:
+    #     writer.release()
+    #     print('Finished! Output saved under {}'.format(output_path))
+    # else:
+    #     print('Input video file was empty')
     import numpy as np
     if np.mean(predictions) > threshold:
         return 1

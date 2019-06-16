@@ -129,6 +129,8 @@ def upload_file():
                                       'fake': fake_prediction}, ignore_index=True)
             dbio.write_history(history)
 
+        os.remove(filepath)
+        
         if fake_prediction == 1:
             return render_template('fake.hmtl')
         elif fake_prediction == 0:
