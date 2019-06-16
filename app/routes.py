@@ -82,7 +82,7 @@ def upload_file():
             youtube_url = request.form['youtube_link']
 
             if youtube_url in history['link'].values:
-                fake = history.loc[history['link'] == youtube_url, 'fake'][0]
+                fake = history.loc[history['link'] == youtube_url, 'fake'].iloc[0]
 
             if fake is not None:
                 return render_template('fake.html') if fake else render_template('real.html')
@@ -102,7 +102,7 @@ def upload_file():
             hasher.update(buf)
         hash = hasher.hexdigest()
         if hash in history.hash.values:
-            fake = history.loc[history.hash == hash, 'hash'][0]
+            fake = history.loc[history.hash == hash, 'hash'].iloc[0]
 
         if fake is not None:
             return render_template('fake.html') if fake else render_template('real.html')

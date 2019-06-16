@@ -22,3 +22,6 @@ scandir
 six==1.12.0
 termcolor==1.1.0
 tqdm
+sqlalchemy
+pytube
+pymysql
