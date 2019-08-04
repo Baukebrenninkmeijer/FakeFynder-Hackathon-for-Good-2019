@@ -4,3 +4,5 @@ In our submission for the Hackathon for Good, we created a working POC which is 
 The POC also allows for easy checking whether a video has been seen before with a database of video hashes which can be searched. 
 
 ![website usage](images/website_usage.gif)
+
+For usage, one needs to download the model weights from the [FaceForensics repository](https://github.com/ondyari/FaceForensics) and put them in `classification/weights`. 
