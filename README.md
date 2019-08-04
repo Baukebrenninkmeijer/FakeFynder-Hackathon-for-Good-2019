@@ -5,4 +5,5 @@ The POC also allows for easy checking whether a video has been seen before with 
 
 ![website usage](images/website_usage.gif)
 
-For usage, one needs to download the model weights from the [FaceForensics repository](https://github.com/ondyari/FaceForensics) and put them in `classification/weights`. 
+## Usage
+For usage, one needs to download the model weights from the [FaceForensics repository](https://github.com/ondyari/FaceForensics) and put them in `classification/weights`. Then call `flask run` in the top level directory.
